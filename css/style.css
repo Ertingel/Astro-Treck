@@ -1,0 +1,42 @@
+@import url("https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&display=swap");
+.orbitron-400,
+body {
+	font-family: "Orbitron", sans-serif;
+	font-optical-sizing: auto;
+	font-weight: 400;
+	font-style: normal;
+}
+
+@import url("https://fonts.googleapis.com/css2?family=Libre+Barcode+39&display=swap");
+.libre-barcode-39-regular {
+	font-family: "Libre Barcode 39", system-ui;
+	font-weight: 400;
+	font-style: normal;
+}
+
+body {
+	position: relative;
+	width: 100vw;
+	height: 100vh;
+	margin: 0;
+
+	font-size: 3vmin;
+
+	color: #fff;
+	background: #222;
+	background: radial-gradient(ellipse, #221 0%, #111 100%) no-repeat;
+}
+
+body > * {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+
+	display: flex;
+	flex-flow: column nowrap;
+	align-items: center;
+	justify-content: center;
+	gap: 0.5em;
+}

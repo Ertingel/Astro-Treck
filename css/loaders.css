@@ -1,0 +1,51 @@
+/* HTML: <div class="loader"></div> */
+.loader {
+	width: fit-content;
+	font-weight: bold;
+	/* font-family: monospace; */
+	font-family: "Orbitron", sans-serif;
+	clip-path: inset(0 0.7em 0 0);
+	animation: loaderAnimation 1s steps(4) infinite;
+}
+.loader:before {
+	content: "Loading...";
+}
+@keyframes loaderAnimation {
+	to {
+		clip-path: inset(0 -0.23em 0 0);
+	}
+}
+
+/* HTML: <div class="planet-loader"></div> */
+.planet-loader {
+	width: 4.375em;
+	aspect-ratio: 1;
+	background: radial-gradient(farthest-side, #fffb02 90%, #0000) center/1em
+			1em,
+		radial-gradient(farthest-side, #7aafff 90%, #0000) bottom/0.5em 0.5em;
+	background-repeat: no-repeat;
+	animation: orbitAnimation 2s infinite linear;
+	/* animation: orbitAnimation 10s infinite linear; */
+	position: relative;
+}
+
+.planet-loader::before {
+	content: "";
+	position: absolute;
+	width: 0.25em;
+	aspect-ratio: 1;
+	inset: auto 0 1em;
+	margin: auto;
+	background: #ffffff;
+	border-radius: 50%;
+	transform-origin: 50% calc(100% + 0.625em);
+	animation: inherit;
+	animation-duration: 1s;
+	/* animation-duration: 5s; */
+}
+
+@keyframes orbitAnimation {
+	100% {
+		transform: rotate(1turn);
+	}
+}
