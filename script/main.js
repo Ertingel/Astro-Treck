@@ -1,21 +1,35 @@
+/**
+ * @type {HTMLCanvasElement}
+ */
 var viewport
+
+/**
+ * @type {Node}
+ */
 var ui
+
+/**
+ * @type {CanvasRenderingContext2D}
+ */
 var ctx
 
-function init_elements() {
+window.onload = () => {
+	initElements()
+}
+
+/**
+ * Initializes all the DOM elements on the page is loaded.
+ */
+function initElements() {
 	viewport = document.getElementById("viewport")
 	ui = document.getElementById("ui")
 	ctx = viewport.getContext("2d")
 
-	window.onresize = resize_viewport
-	resize_viewport()
-}
+	resizeViewport = () => {
+		viewport.width = window.innerWidth
+		viewport.height = window.innerHeight
+	}
 
-function resize_viewport() {
-	viewport.width = window.innerWidth
-	viewport.height = window.innerHeight
-}
-
-window.onload = () => {
-	init_elements()
+	window.onresize = resizeViewport
+	resizeViewport()
 }
