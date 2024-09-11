@@ -1,35 +1,15 @@
-/**
- * @type {HTMLCanvasElement}
- */
-var viewport
-
-/**
- * @type {Node}
- */
-var ui
-
-/**
- * @type {CanvasRenderingContext2D}
- */
-var ctx
-
 window.onload = () => {
-	initElements()
-}
-
-/**
- * Initializes all the DOM elements on the page is loaded.
- */
-function initElements() {
-	viewport = document.getElementById("viewport")
+	viewport = new Canvas("viewport", "#000000")
 	ui = document.getElementById("ui")
-	ctx = viewport.getContext("2d")
+	clearNode(ui)
 
-	resizeViewport = () => {
-		viewport.width = window.innerWidth
-		viewport.height = window.innerHeight
-	}
+	viewport.camera.width = 10
+	viewport.camera.height = 10
 
-	window.onresize = resizeViewport
-	resizeViewport()
+	const star = new Star(viewport)
+	const planet1 = new Planet(star, 3, 0.25)
+	const planet2 = new Planet(star, 7, 0.5)
+	const planet3 = new Planet(planet2, 1, 0.1)
+
+	viewport.play()
 }
