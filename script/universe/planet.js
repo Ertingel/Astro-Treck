@@ -16,15 +16,19 @@ class Star extends Object {
 }
 
 class Planet extends Object {
-	constructor(parent, semimajor, radius) {
-		super({ x: radius, parent })
-		this.semimajor = semimajor
+	constructor({ parent, radius, semimajor_axis, eccentricity }) {
+		super({ parent })
 		this.radius = radius
+		this.orbit = new KeplerianOrbit(semimajor_axis, eccentricity)
 	}
 
 	update(canvas) {
-		this.x = Math.cos(canvas.time / this.semimajor) * this.semimajor
-		this.y = Math.sin(canvas.time / this.semimajor) * this.semimajor
+		const { x, y } = new MeanAnomaly(
+			canvas.time /
+				(this.orbit.semimajor_axis * this.orbit.semimajor_axis)
+		).position(this.orbit)
+		this.x = x
+		this.y = y
 	}
 
 	draw(canvas) {

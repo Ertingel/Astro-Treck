@@ -29,23 +29,6 @@ class Canvas {
 		}).observe(element)
 	}
 
-	clear() {
-		this.context.reset()
-		this.context.fillStyle = this.clearColor
-		this.context.fillRect(0, 0, this.element.width, this.element.height)
-
-		const zoom = Math.min(
-			this.element.width / this.camera.width / 2.0,
-			this.element.height / this.camera.height / 2.0
-		)
-		this.context.translate(
-			this.element.width / 2.0,
-			this.element.height / 2.0
-		)
-		this.context.scale(zoom, zoom)
-		this.context.translate(-this.camera.x, this.camera.y)
-	}
-
 	animation(animationFunction, animate = true) {
 		this.animate = animate
 		this.animationFunction = animationFunction
@@ -75,10 +58,6 @@ class Canvas {
 		callback()
 	}
 
-	pause() {
-		this.animate = false
-	}
-
 	step(delta) {
 		this.time += delta
 		this.delta = delta
@@ -88,13 +67,60 @@ class Canvas {
 	}
 
 	update() {
-		this.children.forEach(object => object.updateAll(this))
+		const recursive = (entity, stack) => {
+			if (entity.update) entity.update(this, stack)
+			if (entity.children) {
+				stack.unshift({ entity })
+				entity.children.forEach(child => recursive(child, stack))
+				stack.shift()
+			}
+		}
+		this.children.forEach(entity => recursive(entity, []))
 	}
 
 	redraw() {
 		this.clear()
-		this.children.forEach(object => object.drawAll(this))
+
+		const recursive = (entity, stack) => {
+			this.context.save()
+
+			if (entity.rotation) this.context.rotate(entity.rotation)
+			if (entity.x && entity.y)
+				this.context.translate(entity.x, -entity.y)
+
+			if (entity.draw) entity.draw(this, stack)
+			if (entity.children) {
+				stack.unshift({ entity })
+				entity.children.forEach(child => recursive(child, stack))
+				stack.shift()
+			}
+
+			this.context.restore()
+		}
+		this.children.forEach(object => recursive(object, []))
+
 		if (this.animationFunction) this.animationFunction(this, this.context)
+	}
+
+	clear() {
+		this.context.reset()
+		this.context.fillStyle = this.clearColor
+		this.context.fillRect(0, 0, this.element.width, this.element.height)
+
+		const zoom = Math.min(
+			this.element.width / this.camera.width / 2.0,
+			this.element.height / this.camera.height / 2.0
+		)
+		this.context.translate(
+			this.element.width / 2.0,
+			this.element.height / 2.0
+		)
+		this.context.scale(zoom, zoom)
+		this.context.translate(-this.camera.x, this.camera.y)
+	}
+
+	pause() {
+		this.animate = false
 	}
 
 	addChild(child) {
@@ -110,11 +136,10 @@ class Canvas {
 }
 
 class Object {
-	constructor(data = { x: 0.0, y: 0.0, rotation: 0.0, parent: null }) {
-		this.x = data?.x || 0.0
-		this.y = data?.y || 0.0
-		this.rotation = data?.rotation || 0.0
-		this.propagateRotation = data?.propagateRotation || 0.0
+	constructor(data) {
+		this.x = data.x
+		this.y = data.y
+		this.rotation = data.rotation
 
 		this.children = []
 		this.setParent(data?.parent)
@@ -140,30 +165,4 @@ class Object {
 		if (this.parent) this.parent.removeChild(this)
 		else this.parent = null
 	}
-
-	updateAll(canvas) {
-		this.update(canvas)
-		this.children.forEach(child => child.updateAll(canvas))
-	}
-
-	update(canvas) {}
-
-	drawAll(canvas) {
-		canvas.context.save()
-
-		canvas.context.save()
-		if (this.propagateRotation) canvas.context.rotate(this.rotation)
-		canvas.context.translate(this.x, -this.y)
-		this.children.forEach(child => child.drawAll(canvas))
-		canvas.context.restore()
-
-		canvas.context.rotate(this.rotation)
-		canvas.context.translate(this.x, -this.y)
-
-		this.draw(canvas)
-
-		canvas.context.restore()
-	}
-
-	draw(canvas) {}
 }
