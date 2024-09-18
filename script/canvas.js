@@ -14,6 +14,8 @@ class Canvas {
 
 		this.element = element
 		this.context = element.getContext("2d")
+		this.context.imageSmoothingEnabled = true
+		this.context.imageSmoothingQuality = "high"
 		this.clearColor = clearColor
 		this.camera = camera
 		this.children = []
@@ -26,7 +28,8 @@ class Canvas {
 				entry.target.width = entry.contentRect.width
 				entry.target.height = entry.contentRect.height
 			}
-		}).observe(element)
+			if (!this.animate) this.redraw()
+		}).observe(this.element)
 	}
 
 	animation(animationFunction, animate = true) {
@@ -81,23 +84,18 @@ class Canvas {
 	redraw() {
 		this.clear()
 
-		const recursive = (entity, stack) => {
+		const recursive = entity => {
 			this.context.save()
+			this.transform(entity)
+			entity.transform = this.context.getTransform()
 
-			if (entity.rotation) this.context.rotate(entity.rotation)
-			if (entity.x && entity.y)
-				this.context.translate(entity.x, -entity.y)
-
-			if (entity.draw) entity.draw(this, stack)
+			if (entity.draw) entity.draw(this)
 			if (entity.children) {
-				stack.unshift({ entity })
-				entity.children.forEach(child => recursive(child, stack))
-				stack.shift()
+				entity.children.forEach(child => recursive(child))
 			}
-
 			this.context.restore()
 		}
-		this.children.forEach(object => recursive(object, []))
+		this.children.forEach(object => recursive(object))
 
 		if (this.animationFunction) this.animationFunction(this, this.context)
 	}
@@ -121,6 +119,11 @@ class Canvas {
 
 	pause() {
 		this.animate = false
+	}
+
+	transform(data) {
+		if (data.rotation) this.context.rotate(data.rotation)
+		if (data.x && data.y) this.context.translate(data.x, -data.y)
 	}
 
 	addChild(child) {

@@ -92,7 +92,7 @@ function apoapsis_periapsis_conversion() {
 		const orbit = new KeplerianOrbit(1.0, eccentricity)
 
 		const periapsis_result = orbit.periapsis()
-		var { x, y } = new TrueAnomaly(0.0).position(orbit)
+		var { x, y } = new TrueAnomaly(0.0).point(orbit)
 		const periapsis_expected = Math.sqrt(x * x + y * y)
 
 		test(
@@ -103,7 +103,7 @@ function apoapsis_periapsis_conversion() {
 		)
 
 		const apoapsis_result = orbit.apoapsis()
-		var { x, y } = new TrueAnomaly(Math.PI).position(orbit)
+		var { x, y } = new TrueAnomaly(Math.PI).point(orbit)
 		const apoapsis_expected = Math.sqrt(x * x + y * y)
 
 		test(
@@ -166,18 +166,16 @@ function eccentric_and_mean_anomaly_conversion() {
 	}
 }
 
-position_from_anomaly()
-function position_from_anomaly() {
+point_from_anomaly()
+function point_from_anomaly() {
 	const target_precision = 0.0000001
 
 	const test2 = (orbit, input, x, y) => {
 		const precision = { x: target_precision, y: target_precision }
 
-		const result1 = new EccentricAnomaly()
-			.set_degrees(input)
-			.position(orbit)
+		const result1 = new EccentricAnomaly().set_degrees(input).point(orbit)
 		test(
-			`'dvec2_from_eccentric_anomaly' did not convert correctly! \nInput:	${input} \nExpected: ${x},${y} \nGot:	  ${result1.x},${result1.y} \nTarget:   ${target_precision}`,
+			`'point_from_eccentric_anomaly' did not convert correctly! \nInput:	${input} \nExpected: ${x}, ${y} \nGot:	  ${result1.x}, ${result1.y} \nTarget:   ${target_precision}`,
 			result1,
 			{ x, y },
 			precision
@@ -186,9 +184,9 @@ function position_from_anomaly() {
 		const result2 = new EccentricAnomaly()
 			.set_degrees(input)
 			.true_anomaly(orbit)
-			.position(orbit)
+			.point(orbit)
 		test(
-			`'dvec2_from_true_anomaly' did not convert correctly! \nInput:	${input} \nExpected: ${x},${y} \nGot:	  ${result2.x},${result2.y} \nTarget:   ${target_precision}`,
+			`'point_from_true_anomaly' did not convert correctly! \nInput:	${input} \nExpected: ${x},${y} \nGot:	  ${result2.x},${result2.y} \nTarget:   ${target_precision}`,
 			result2,
 			{ x, y },
 			precision

@@ -32,5 +32,13 @@ window.onload = () => {
 		eccentricity: 0.25,
 	})
 
+	const planet4 = new Planet({
+		parent: star,
+		radius: 0.05,
+		semimajor_axis: 5,
+		eccentricity: 0.75,
+		argument_of_periapsis: Math.PI / 2,
+	})
+
 	viewport.play()
 }
