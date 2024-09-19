@@ -1,5 +1,5 @@
 /**
- * The `KeplerianOrbit` struct encapsulate the data of a _[Keplerian orbit](https://en.wikipedia.org/wiki/Kepler_orbit)_.
+ * The `KeplerianOrbit` class encapsulate the data of a _[Keplerian orbit](https://en.wikipedia.org/wiki/Kepler_orbit)_.
  *
  * | Name                                                                                             | Notation  | Description                                                                                              |
  * |-------------------------------------------------------------------------------------------------:|:---------:|:---------------------------------------------------------------------------------------------------------|
@@ -17,7 +17,7 @@
  */
 class KeplerianOrbit {
 	/**
-	 * Creates `KeplerianOrbit` struct that encapsulate the data of a _[Keplerian orbit](https://en.wikipedia.org/wiki/Kepler_orbit)_.
+	 * Creates `KeplerianOrbit` class that encapsulate the data of a _[Keplerian orbit](https://en.wikipedia.org/wiki/Kepler_orbit)_.
 	 *
 	 * @param {number} semimajor_axis The half distance between the apoapsis and periapsis.
 	 * @param {number} eccentricity The shape of the ellipse.
@@ -31,6 +31,9 @@ class KeplerianOrbit {
 
 	/**
 	 * Gets the _[semiminor axis](https://en.wikipedia.org/wiki/Semi-major_and_semi-minor_axes)_ of the orbit.
+	 * ```
+	 * b = a * sqrt(1 - e^2)
+	 * ```
 	 *
 	 * @returns {number} The _[semiminor axis](https://en.wikipedia.org/wiki/Semi-major_and_semi-minor_axes)_ of the orbit.
 	 */
@@ -42,7 +45,10 @@ class KeplerianOrbit {
 	}
 
 	/**
-	 * Gets the _[semiminor axis](https://en.wikipedia.org/wiki/Semi-major_and_semi-minor_axes)_ of the orbit.
+	 * Gets the _[focal point](https://en.wikipedia.org/wiki/Ellipse#Definition_as_locus_of_points)_ of the orbit.
+	 * ```
+	 * f = e * a
+	 * ```
 	 *
 	 * @returns {number} The _[Focal point](https://en.wikipedia.org/wiki/Ellipse#Definition_as_locus_of_points)_ distance of the orbit.
 	 */
@@ -53,6 +59,9 @@ class KeplerianOrbit {
 	/**
 	 * Gets the _[periapsis](https://en.wikipedia.org/wiki/Apsis)_ radius of the orbit.
 	 * That is is the nearest point in the orbit of a planetary body about its primary body.
+	 * ```
+	 * periapsis = a * (1 - e)
+	 * ```
 	 *
 	 * @returns {number} The nearest point in the orbit.
 	 */
@@ -63,6 +72,9 @@ class KeplerianOrbit {
 	/**
 	 * Gets the _[apoapsis](https://en.wikipedia.org/wiki/Apsis)_ radius of the orbit.
 	 * That is is the farthest point in the orbit of a planetary body about its primary body.
+	 * ```
+	 * apoapsis = a * (1 + e)
+	 * ```
 	 *
 	 * @returns {number} The farthest point in the orbit.
 	 */
@@ -82,7 +94,7 @@ class KeplerianOrbit {
 }
 
 /**
- * The `TrueAnomaly` struct encapsulate the data of a _[True anomaly](https://en.wikipedia.org/wiki/True_anomaly)_.
+ * The `TrueAnomaly` class encapsulate the data of a _[True anomaly](https://en.wikipedia.org/wiki/True_anomaly)_.
  *
  * | Name                                                                               | Notation  | Description                                                                                              |
  * |-----------------------------------------------------------------------------------:|:---------:|:---------------------------------------------------------------------------------------------------------|
@@ -96,7 +108,7 @@ class KeplerianOrbit {
  */
 class TrueAnomaly {
 	/**
-	 * Creates `TrueAnomaly` struct that encapsulate the data of a _[True anomaly](https://en.wikipedia.org/wiki/True_anomaly)_.
+	 * Creates `TrueAnomaly` class that encapsulate the data of a _[True anomaly](https://en.wikipedia.org/wiki/True_anomaly)_.
 	 *
 	 * @param {number} angle The angle in **radians**.
 	 */
@@ -126,6 +138,9 @@ class TrueAnomaly {
 
 	/**
 	 * Gets the radius form _focal center_ to _orbiting object_ given a _[true anomaly](https://en.wikipedia.org/wiki/True_anomaly)_.
+	 * ```
+	 * r = a * (1 - e ^ 2) / (1 + e * cos(θ))
+	 * ```
 	 *
 	 * @param {KeplerianOrbit} orbit The orbit in question.
 	 * @returns {number} The radius form _focal center_ to orbiting object.
@@ -140,6 +155,9 @@ class TrueAnomaly {
 
 	/**
 	 * Gets a **point** object from a given _[true anomaly](https://en.wikipedia.org/wiki/True_anomaly)_ of the orbit.
+	 * ```
+	 * p = (r * cos(θ), r * sin(θ))
+	 * ```
 	 *
 	 * @param {KeplerianOrbit} orbit The orbit in question.
 	 * @returns {object} The **point** object.
@@ -158,6 +176,9 @@ class TrueAnomaly {
 
 	/**
 	 * Converts a given _[true anomaly](https://en.wikipedia.org/wiki/True_anomaly)_ in to a _[eccentric anomaly](https://en.wikipedia.org/wiki/Eccentric_anomaly)_.
+	 * ```
+	 * atan2( (position(θ) + (f, 0)) / (a, b) )
+	 * ```
 	 *
 	 * @param {KeplerianOrbit} orbit The orbit in question.
 	 * @returns {EccentricAnomaly} The _[Eccentric anomaly](https://en.wikipedia.org/wiki/Eccentric_anomaly)_ of the orbit.
@@ -185,7 +206,7 @@ class TrueAnomaly {
 }
 
 /**
- * The `EccentricAnomaly` struct encapsulate the data of a _[Eccentric anomaly](https://en.wikipedia.org/wiki/Eccentric_anomaly)_.
+ * The `EccentricAnomaly` class encapsulate the data of a _[Eccentric anomaly](https://en.wikipedia.org/wiki/Eccentric_anomaly)_.
  *
  * | Name                                                                               | Notation  | Description                                                                                              |
  * |-----------------------------------------------------------------------------------:|:---------:|:---------------------------------------------------------------------------------------------------------|
@@ -200,7 +221,7 @@ class TrueAnomaly {
  */
 class EccentricAnomaly {
 	/**
-	 * Creates `EccentricAnomaly` struct that encapsulate the data of a _[Eccentric anomaly](https://en.wikipedia.org/wiki/Eccentric_anomaly)_.
+	 * Creates `EccentricAnomaly` class that encapsulate the data of a _[Eccentric anomaly](https://en.wikipedia.org/wiki/Eccentric_anomaly)_.
 	 *
 	 * @param {number} angle The angle in **radians**.
 	 */
@@ -230,6 +251,9 @@ class EccentricAnomaly {
 
 	/**
 	 * Gets the radius form _focal center_ to _orbiting object_ given a _[eccentric anomaly](https://en.wikipedia.org/wiki/Eccentric_anomaly)_.
+	 * ```
+	 * r = len( p )
+	 * ```
 	 *
 	 * @param {KeplerianOrbit} orbit The orbit in question.
 	 * @returns {number} The radius form _focal center_ to orbiting object.
@@ -242,6 +266,9 @@ class EccentricAnomaly {
 
 	/**
 	 * Gets a **point** object from a given _[eccentric anomaly](https://en.wikipedia.org/wiki/Eccentric_anomaly)_ of the orbit.
+	 * ```
+	 * p = Rotation_Matrix * (a * cos(E) - f, b * sin(E))
+	 * ```
 	 *
 	 * @param {KeplerianOrbit} orbit The orbit in question.
 	 * @returns {object} The **point** object.
@@ -249,8 +276,8 @@ class EccentricAnomaly {
 	point(orbit) {
 		const x =
 			Math.cos(this.angle) * orbit.semimajor_axis - orbit.focal_point()
-		let y = Math.sin(this.angle) * orbit.semiminor_axis()
 
+		let y = Math.sin(this.angle) * orbit.semiminor_axis()
 		if (!orbit.is_counterclockwise()) y = -y
 
 		const cos = Math.cos(orbit.argument_of_periapsis)
@@ -259,23 +286,13 @@ class EccentricAnomaly {
 			x: x * cos + y * sin,
 			y: y * cos - x * sin,
 		}
-
-		/* if (orbit.is_counterclockwise())
-			return {
-				x:
-					Math.cos(this.angle) * orbit.semimajor_axis -
-					orbit.focal_point(),
-				y: Math.sin(this.angle) * orbit.semiminor_axis(),
-			}
-		else
-			return {
-				x: Math.cos(-this.angle) * semimajor_axis - orbit.focal_point(),
-				y: Math.sin(-this.angle) * orbit.semiminor_axis(),
-			} */
 	}
 
 	/**
 	 * Converts a given _[eccentric anomaly](https://en.wikipedia.org/wiki/Eccentric_anomaly)_ in to a _[true anomaly](https://en.wikipedia.org/wiki/True_anomaly)_.
+	 * ```
+	 * θ = atan2( p )
+	 * ```
 	 *
 	 * @param {KeplerianOrbit} orbit The orbit in question.
 	 * @returns {TrueAnomaly} The _[Eccentric anomaly](https://en.wikipedia.org/wiki/Eccentric_anomaly)_ of the orbit.
@@ -299,7 +316,7 @@ class EccentricAnomaly {
 }
 
 /**
- * The `MeanAnomaly` struct encapsulate the data of a _[Mean anomaly](https://en.wikipedia.org/wiki/Mean_anomaly)_.
+ * The `MeanAnomaly` class encapsulate the data of a _[Mean anomaly](https://en.wikipedia.org/wiki/Mean_anomaly)_.
  *
  * | Name                                                                               | Notation  | Description                                                                                              |
  * |-----------------------------------------------------------------------------------:|:---------:|:---------------------------------------------------------------------------------------------------------|
@@ -314,7 +331,7 @@ class EccentricAnomaly {
  */
 class MeanAnomaly {
 	/**
-	 * Creates `MeanAnomaly` struct that encapsulate the data of a _[Mean anomaly](https://en.wikipedia.org/wiki/Mean_anomaly)_.
+	 * Creates `MeanAnomaly` class that encapsulate the data of a _[Mean anomaly](https://en.wikipedia.org/wiki/Mean_anomaly)_.
 	 *
 	 * @param {number} angle The angle in **radians**.
 	 */

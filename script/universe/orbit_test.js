@@ -171,16 +171,16 @@ function point_from_anomaly() {
 	const target_precision = 0.0000001
 
 	const test2 = (orbit, input, x, y) => {
-		const precision = { x: target_precision, y: target_precision }
-
+		// Test that the eccentric anomaly matches.
 		const result1 = new EccentricAnomaly().set_degrees(input).point(orbit)
 		test(
 			`'point_from_eccentric_anomaly' did not convert correctly! \nInput:	${input} \nExpected: ${x}, ${y} \nGot:	  ${result1.x}, ${result1.y} \nTarget:   ${target_precision}`,
 			result1,
 			{ x, y },
-			precision
+			{ x: target_precision, y: target_precision }
 		)
 
+		// Test that the true anomaly matches.
 		const result2 = new EccentricAnomaly()
 			.set_degrees(input)
 			.true_anomaly(orbit)
@@ -189,10 +189,11 @@ function point_from_anomaly() {
 			`'point_from_true_anomaly' did not convert correctly! \nInput:	${input} \nExpected: ${x},${y} \nGot:	  ${result2.x},${result2.y} \nTarget:   ${target_precision}`,
 			result2,
 			{ x, y },
-			precision
+			{ x: target_precision, y: target_precision }
 		)
 	}
 
+	// Tests for circular orbit.
 	const orbit1 = new KeplerianOrbit(1.0, 0.0)
 
 	test2(orbit1, 0.0, 1.0, 0.0)
@@ -205,6 +206,7 @@ function point_from_anomaly() {
 	test2(orbit1, 270.0, -0.0, -1.0)
 	test2(orbit1, 315.0, 0.7071067812, -0.7071067812)
 
+	// Tests for eccentric orbits.
 	const orbit2 = new KeplerianOrbit(2.0, 0.5)
 
 	test2(orbit2, 0.0, 1.0, 0.0)
@@ -217,6 +219,7 @@ function point_from_anomaly() {
 	test2(orbit2, 270.0, -1.0, -1.73205080756888)
 	test2(orbit2, 315.0, 0.4142135623731, -1.2247448713916)
 
+	// Tests for very eccentric orbits.
 	const orbit3 = new KeplerianOrbit(4.0, 0.75)
 
 	test2(orbit3, 0.0, 1.0, 0.0)
