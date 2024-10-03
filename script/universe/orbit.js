@@ -16,17 +16,23 @@
  * | Radius                                                                                           | _r_       | The radius form focal center to orbiting object.                                                         |
  */
 class KeplerianOrbit {
-	/**
-	 * Creates `KeplerianOrbit` class that encapsulate the data of a _[Keplerian orbit](https://en.wikipedia.org/wiki/Kepler_orbit)_.
+	/**Creates `KeplerianOrbit` class that encapsulate the data of a _[Keplerian orbit](https://en.wikipedia.org/wiki/Kepler_orbit)_.
 	 *
 	 * @param {number} semimajor_axis The half distance between the apoapsis and periapsis.
 	 * @param {number} eccentricity The shape of the ellipse.
 	 * @param {number} argument_of_periapsis The orientation of the ellipse in the orbital plane.
+	 * @param {boolean} clockwise Whether or not the orbit is clockwise or not.
 	 */
-	constructor(semimajor_axis, eccentricity = 0.0, argument_of_periapsis = 0) {
-		this.semimajor_axis = semimajor_axis
+	constructor(
+		semimajor_axis,
+		eccentricity = 0.0,
+		argument_of_periapsis = 0,
+		clockwise = false
+	) {
+		this.semimajor_axis = Math.abs(semimajor_axis)
 		this.eccentricity = Math.abs(eccentricity)
 		this.argument_of_periapsis = argument_of_periapsis
+		this.clockwise = clockwise
 	}
 
 	/**
@@ -39,7 +45,7 @@ class KeplerianOrbit {
 	 */
 	semiminor_axis() {
 		return (
-			Math.abs(this.semimajor_axis) *
+			this.semimajor_axis *
 			Math.sqrt(1.0 - this.eccentricity * this.eccentricity)
 		)
 	}
@@ -66,7 +72,7 @@ class KeplerianOrbit {
 	 * @returns {number} The nearest point in the orbit.
 	 */
 	periapsis() {
-		return (1.0 - this.eccentricity) * Math.abs(this.semimajor_axis)
+		return (1.0 - this.eccentricity) * this.semimajor_axis
 	}
 
 	/**
@@ -79,17 +85,17 @@ class KeplerianOrbit {
 	 * @returns {number} The farthest point in the orbit.
 	 */
 	apoapsis() {
-		return (1.0 + this.eccentricity) * Math.abs(this.semimajor_axis)
+		return (1.0 + this.eccentricity) * this.semimajor_axis
 	}
 
 	/**
 	 * **Unique to 2D orbits!**
-	 * Gets whether or not the orbit is counterclockwise or not.
+	 * Gets whether or not the orbit is clockwise or not.
 	 *
-	 * @returns {bool} Boolean indicating counterclockwise orbit.
+	 * @returns {bool} Boolean indicating clockwise orbit.
 	 */
-	is_counterclockwise() {
-		return this.semimajor_axis >= 0.0
+	is_clockwise() {
+		return this.clockwise
 	}
 }
 
@@ -123,7 +129,7 @@ class TrueAnomaly {
 	 * @returns {TrueAnomaly} `self`
 	 */
 	set_degrees(angle) {
-		this.angle = angle * (Math.PI / 180)
+		this.angle = angle * (Math.PI / 180.0)
 		return this
 	}
 
@@ -133,7 +139,7 @@ class TrueAnomaly {
 	 * @returns {number} The angle in **degrees**.
 	 */
 	get_degrees() {
-		return this.angle * (180 / Math.PI)
+		return this.angle * (180.0 / Math.PI)
 	}
 
 	/**
@@ -147,7 +153,7 @@ class TrueAnomaly {
 	 */
 	radius(orbit) {
 		return (
-			(Math.abs(orbit.semimajor_axis) *
+			(orbit.semimajor_axis *
 				(1.0 - orbit.eccentricity * orbit.eccentricity)) /
 			(1.0 + orbit.eccentricity * Math.cos(this.angle))
 		)
@@ -165,7 +171,7 @@ class TrueAnomaly {
 	point(orbit) {
 		const radius = this.radius(orbit)
 		let angle =
-			(orbit.is_counterclockwise() ? this.angle : -this.angle) +
+			(orbit.is_clockwise() ? -this.angle : this.angle) +
 			orbit.argument_of_periapsis
 
 		return {
@@ -177,21 +183,22 @@ class TrueAnomaly {
 	/**
 	 * Converts a given _[true anomaly](https://en.wikipedia.org/wiki/True_anomaly)_ in to a _[eccentric anomaly](https://en.wikipedia.org/wiki/Eccentric_anomaly)_.
 	 * ```
-	 * atan2( (position(θ) + (f, 0)) / (a, b) )
+	 * atan2( (point(θ) + (f, 0)) / (a, b) )
 	 * ```
 	 *
 	 * @param {KeplerianOrbit} orbit The orbit in question.
 	 * @returns {EccentricAnomaly} The _[Eccentric anomaly](https://en.wikipedia.org/wiki/Eccentric_anomaly)_ of the orbit.
 	 */
 	eccentric_anomaly(orbit) {
-		const { x, y } = this.position(orbit)
+		const { x, y } = this.point(orbit)
 
-		return new EccentricAnomaly(
-			Math.atan2(
-				y / orbit.semiminor_axis(),
-				(x + orbit.focal_point()) / orbit.semimajor_axis
-			)
+		const angle = Math.atan2(
+			y / orbit.semiminor_axis(),
+			(x + orbit.focal_point()) / orbit.semimajor_axis
 		)
+
+		return new EccentricAnomaly(angle)
+		/* return new EccentricAnomaly(orbit.is_clockwise() ? -angle : angle) */
 	}
 
 	/**
@@ -236,7 +243,7 @@ class EccentricAnomaly {
 	 * @returns {TrueAnomaly} `self`
 	 */
 	set_degrees(angle) {
-		this.angle = angle * (Math.PI / 180)
+		this.angle = angle * (Math.PI / 180.0)
 		return this
 	}
 
@@ -246,7 +253,7 @@ class EccentricAnomaly {
 	 * @returns {number} The angle in **degrees**.
 	 */
 	get_degrees() {
-		return this.angle * (180 / Math.PI)
+		return this.angle * (180.0 / Math.PI)
 	}
 
 	/**
@@ -278,7 +285,7 @@ class EccentricAnomaly {
 			Math.cos(this.angle) * orbit.semimajor_axis - orbit.focal_point()
 
 		let y = Math.sin(this.angle) * orbit.semiminor_axis()
-		if (!orbit.is_counterclockwise()) y = -y
+		if (orbit.is_clockwise()) y = -y
 
 		const cos = Math.cos(orbit.argument_of_periapsis)
 		const sin = Math.sin(orbit.argument_of_periapsis)
@@ -299,7 +306,9 @@ class EccentricAnomaly {
 	 */
 	true_anomaly(orbit) {
 		const { x, y } = this.point(orbit)
-		return new TrueAnomaly(Math.atan2(y, x))
+		const angle = Math.atan2(y, x)
+		return new TrueAnomaly(angle)
+		/* return new TrueAnomaly(orbit.is_clockwise() ? -angle : angle) */
 	}
 
 	/**
@@ -346,7 +355,7 @@ class MeanAnomaly {
 	 * @returns {TrueAnomaly} `self`
 	 */
 	set_degrees(angle) {
-		this.angle = angle * (Math.PI / 180)
+		this.angle = angle * (Math.PI / 180.0)
 		return this
 	}
 
@@ -356,7 +365,7 @@ class MeanAnomaly {
 	 * @returns {number} The angle in **degrees**.
 	 */
 	get_degrees() {
-		return this.angle * (180 / Math.PI)
+		return this.angle * (180.0 / Math.PI)
 	}
 
 	/**

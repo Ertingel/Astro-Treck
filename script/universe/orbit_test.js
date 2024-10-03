@@ -1,89 +1,90 @@
+/**The `assert` function is based on the rust langage and prints `error_message` if the test failed.
+ *
+ * @param {boolean} test The test.
+ * @param {string} error_message The message printed on test fail.
+ * @returns If the test was successful.
+ */
 function assert(test, error_message) {
 	if (!test) console.error(error_message)
 	return test
 }
 
-function test(error_message, value, expected, tolerance) {
+/**The `test` function checks if the provided `value` is equal or within the `tolerance` of the `expected` value.
+ * It prints `error_message` if the test failed.
+ *
+ * @param {string} error_message The message printed on test fail.
+ * @param {any} value The resuled value.
+ * @param {any} expected The expected value.
+ * @param {any} tolerance The error tolerance.
+ * @returns If the test was successful.
+ */
+function test(error_message, value, expected, tolerance = null) {
+	//For arrays
 	if (Array.isArray(value)) {
+		const expected_is_array = Array.isArray(expected)
+
 		if (tolerance) {
-			const expected_is_array = Array.isArray(expected)
 			const tolerance_is_array = Array.isArray(tolerance)
 
 			return assert(
-				value.every((_, i) => {
-					let value = value[i]
-					let expected = expected_is_array ? expected[i] : expected
-					let tolerance = tolerance_is_array
+				value.every((_, i) =>
+					Math.abs(
+						value[i] - expected_is_array ? expected[i] : expected
+					) <= tolerance_is_array
 						? tolerance[i]
 						: tolerance
-
-					return Math.abs(value - expected) <= tolerance
-				}),
+				),
 				error_message
 			)
 		} else {
-			const expected_is_array = Array.isArray(expected)
-
 			return assert(
-				value.every((_, i) => {
-					let value = value[i]
-					let expected = expected_is_array ? expected[i] : expected
-
-					return value == expected
-				}),
+				value.every((_, i) =>
+					value[i] == expected_is_array ? expected[i] : expected
+				),
 				error_message
 			)
 		}
 	}
 
+	//For objects
 	if (typeof value === "object") {
+		const expected_is_object = typeof expected === "object"
+
+		const keys = []
+		for (var key in value) keys.push(key)
+
 		if (tolerance) {
-			const expected_is_object = typeof expected === "object"
 			const tolerance_is_object = typeof tolerance === "object"
 
-			const keys = []
-			for (var key in value) keys.push(key)
-
 			return assert(
-				keys.every(key => {
-					let value2 = value[key]
-					let expected2 = expected_is_object
-						? expected[key]
-						: expected
-					let tolerance2 = tolerance_is_object
+				keys.every(key =>
+					Math.abs(
+						value[key] - expected_is_object
+							? expected[key]
+							: expected
+					) <= tolerance_is_object
 						? tolerance[key]
 						: tolerance
-
-					return Math.abs(value2 - expected2) <= tolerance2
-				}),
+				),
 				error_message
 			)
 		} else {
-			const expected_is_object = typeof expected === "object"
-
-			const keys = []
-			for (var key in value) keys.push(key)
-
 			return assert(
-				keys.every(key => {
-					let value2 = value[key]
-					let expected2 = expected_is_object
-						? expected[key]
-						: expected
-
-					return value2 == expected2
-				}),
+				keys.every(key =>
+					value[key] == expected_is_object ? expected[key] : expected
+				),
 				error_message
 			)
 		}
 	}
 
+	//For number
 	if (tolerance)
 		return assert(Math.abs(value - expected) <= tolerance, error_message)
 	else return assert(value == expected, error_message)
 }
 
-//apoapsis_periapsis_conversion()
+apoapsis_periapsis_conversion()
 function apoapsis_periapsis_conversion() {
 	const target_precision = 0.000001
 
@@ -120,7 +121,7 @@ function apoapsis_periapsis_conversion() {
 	}
 }
 
-//true_and_eccentric_anomaly_conversion()
+true_and_eccentric_anomaly_conversion()
 function true_and_eccentric_anomaly_conversion() {
 	const target_precision = 0.000001
 
@@ -143,7 +144,7 @@ function true_and_eccentric_anomaly_conversion() {
 	}
 }
 
-//eccentric_and_mean_anomaly_conversion()
+eccentric_and_mean_anomaly_conversion()
 function eccentric_and_mean_anomaly_conversion() {
 	const target_precision = 0.0000001
 

@@ -21,12 +21,14 @@ class Orbit extends Object {
 		semimajor_axis,
 		eccentricity,
 		argument_of_periapsis,
+		clockwise,
 	}) {
 		super({ parent })
 		this.orbit = new KeplerianOrbit(
 			semimajor_axis,
 			eccentricity || 0.0,
-			argument_of_periapsis || 0.0
+			argument_of_periapsis || 0.0,
+			clockwise || false
 		)
 	}
 
@@ -90,17 +92,18 @@ class Orbit extends Object {
 		canvas.context.strokeStyle = color
 		canvas.context.lineWidth = width
 
-		for (let i = 0; i < count; i++) {
-			const mean_time =
-				(canvas.time * 3) /
-				(this.orbit.semimajor_axis * this.orbit.semimajor_axis)
+		let time_shift =
+			(canvas.time * 3) /
+			(this.orbit.semimajor_axis * this.orbit.semimajor_axis)
+		if (this.orbit.is_clockwise()) time_shift = -time_shift
 
+		for (let i = 0; i < count; i++) {
 			const a1 = new MeanAnomaly(
-				mean_time + (i / count - 0.5 / count) * Math.PI * 2
+				time_shift + (i / count - 0.5 / count) * Math.PI * 2
 			).eccentric_anomaly(this.orbit)
 
 			const a2 = new MeanAnomaly(
-				mean_time + (i / count) * Math.PI * 2
+				time_shift + (i / count) * Math.PI * 2
 			).eccentric_anomaly(this.orbit)
 
 			canvas.context.beginPath()
@@ -119,6 +122,78 @@ class Orbit extends Object {
 
 		canvas.context.restore()
 	}
+
+	draw_orbit_dashes2(
+		canvas,
+		width = 0.02,
+		color1 = "#ccccffff",
+		color2 = "#8888ff66",
+		count = 12
+	) {
+		canvas.context.save()
+		canvas.context.setTransform(this.parent.transform)
+		canvas.context.rotate(-this.orbit.argument_of_periapsis)
+
+		const time_shift =
+			(canvas.time * 3) /
+			(this.orbit.semimajor_axis * this.orbit.semimajor_axis)
+
+		const start_angle = new MeanAnomaly(time_shift).true_anomaly(
+			this.orbit
+		).angle
+
+		const gradient = canvas.context.createConicGradient(
+			start_angle + this.orbit.argument_of_periapsis,
+			0,
+			0
+		)
+
+		if (this.orbit.is_clockwise()) {
+			gradient.addColorStop(0, color1)
+			gradient.addColorStop(1, color2)
+		} else {
+			gradient.addColorStop(1, color1)
+			gradient.addColorStop(0, color2)
+		}
+
+		for (
+			let i = (Math.PI * 2) / count;
+			i < Math.PI * 2;
+			i += (Math.PI * 2) / count
+		) {
+			const angle =
+				(new MeanAnomaly(time_shift + i).true_anomaly(this.orbit)
+					.angle -
+					start_angle) /
+					(2 * Math.PI) +
+				1.0
+
+			if (this.orbit.is_clockwise()) {
+				gradient.addColorStop((angle + 0.001) % 1.0, color1)
+				gradient.addColorStop(angle % 1.0, color2)
+			} else {
+				gradient.addColorStop(angle % 1.0, color1)
+				gradient.addColorStop((angle + 0.001) % 1.0, color2)
+			}
+		}
+
+		canvas.context.strokeStyle = gradient
+		canvas.context.lineWidth = width
+
+		canvas.context.beginPath()
+		canvas.context.ellipse(
+			-this.orbit.focal_point(),
+			0,
+			this.orbit.semimajor_axis,
+			this.orbit.semiminor_axis(),
+			0,
+			0,
+			Math.PI * 2
+		)
+		canvas.context.stroke()
+
+		canvas.context.restore()
+	}
 }
 
 class Planet extends Orbit {
@@ -128,9 +203,10 @@ class Planet extends Orbit {
 	}
 
 	draw(canvas) {
-		this.draw_orbit_lines(canvas)
+		/* this.draw_orbit_lines(canvas)
 		this.draw_orbit_dashes(canvas)
-		this.draw_orbit_points(canvas)
+		this.draw_orbit_points(canvas) */
+		this.draw_orbit_dashes2(canvas)
 
 		// Drawing Planet
 		canvas.context.fillStyle = "#aaaaaa"

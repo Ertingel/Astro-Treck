@@ -35,6 +35,7 @@ window.onload = () => {
 		semimajor_axis: 5,
 		eccentricity: 0.75,
 		argument_of_periapsis: Math.PI / 2,
+		clockwise: true,
 	})
 
 	viewport.play()
