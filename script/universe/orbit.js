@@ -89,6 +89,23 @@ class KeplerianOrbit {
 	}
 
 	/**
+	 * Rotates a point from mathematical coordinates into local coordinates.
+	 *
+	 * @param {*} point
+	 * @returns The rotated point.
+	 */
+	rotate_point({ x, y }) {
+		y = this.clockwise ? -y : y
+
+		const cos = Math.cos(this.argument_of_periapsis)
+		const sin = Math.sin(this.argument_of_periapsis)
+		return {
+			x: x * cos + y * sin,
+			y: y * cos - x * sin,
+		}
+	}
+
+	/**
 	 * **Unique to 2D orbits!**
 	 * Gets whether or not the orbit is clockwise or not.
 	 *
@@ -160,7 +177,7 @@ class TrueAnomaly {
 	}
 
 	/**
-	 * Gets a **point** object from a given _[true anomaly](https://en.wikipedia.org/wiki/True_anomaly)_ of the orbit.
+	 * Gets a **point** object from a given _[true anomaly](https://en.wikipedia.org/wiki/True_anomaly)_ of the orbit in mathematical space.
 	 * ```
 	 * p = (r * cos(θ), r * sin(θ))
 	 * ```
@@ -170,14 +187,25 @@ class TrueAnomaly {
 	 */
 	point(orbit) {
 		const radius = this.radius(orbit)
-		let angle =
-			(orbit.is_clockwise() ? -this.angle : this.angle) +
-			orbit.argument_of_periapsis
+		let angle = this.angle + orbit.argument_of_periapsis
 
 		return {
 			x: Math.cos(angle) * radius,
 			y: Math.sin(angle) * radius,
 		}
+	}
+
+	/**
+	 * Gets a **point** object from a given _[true anomaly](https://en.wikipedia.org/wiki/True_anomaly)_ of the orbit in local space.
+	 * ```
+	 * p = (r * cos(θ), r * sin(θ))
+	 * ```
+	 *
+	 * @param {KeplerianOrbit} orbit The orbit in question.
+	 * @returns {object} The **point** object.
+	 */
+	point2d(orbit) {
+		return orbit.rotate_point(this.point(orbit))
 	}
 
 	/**
@@ -198,7 +226,6 @@ class TrueAnomaly {
 		)
 
 		return new EccentricAnomaly(angle)
-		/* return new EccentricAnomaly(orbit.is_clockwise() ? -angle : angle) */
 	}
 
 	/**
@@ -272,7 +299,7 @@ class EccentricAnomaly {
 	}
 
 	/**
-	 * Gets a **point** object from a given _[eccentric anomaly](https://en.wikipedia.org/wiki/Eccentric_anomaly)_ of the orbit.
+	 * Gets a **point** object from a given _[eccentric anomaly](https://en.wikipedia.org/wiki/Eccentric_anomaly)_ of the orbit in mathematical space.
 	 * ```
 	 * p = Rotation_Matrix * (a * cos(E) - f, b * sin(E))
 	 * ```
@@ -281,18 +308,25 @@ class EccentricAnomaly {
 	 * @returns {object} The **point** object.
 	 */
 	point(orbit) {
-		const x =
-			Math.cos(this.angle) * orbit.semimajor_axis - orbit.focal_point()
-
-		let y = Math.sin(this.angle) * orbit.semiminor_axis()
-		if (orbit.is_clockwise()) y = -y
-
-		const cos = Math.cos(orbit.argument_of_periapsis)
-		const sin = Math.sin(orbit.argument_of_periapsis)
 		return {
-			x: x * cos + y * sin,
-			y: y * cos - x * sin,
+			x:
+				Math.cos(this.angle) * orbit.semimajor_axis -
+				orbit.focal_point(),
+			y: Math.sin(this.angle) * orbit.semiminor_axis(),
 		}
+	}
+
+	/**
+	 * Gets a **point** object from a given _[eccentric anomaly](https://en.wikipedia.org/wiki/Eccentric_anomaly)_ of the orbit in local space.
+	 * ```
+	 * p = Rotation_Matrix * (a * cos(E) - f, b * sin(E))
+	 * ```
+	 *
+	 * @param {KeplerianOrbit} orbit The orbit in question.
+	 * @returns {object} The **point** object.
+	 */
+	point2d(orbit) {
+		return orbit.rotate_point(this.point(orbit))
 	}
 
 	/**
@@ -308,7 +342,6 @@ class EccentricAnomaly {
 		const { x, y } = this.point(orbit)
 		const angle = Math.atan2(y, x)
 		return new TrueAnomaly(angle)
-		/* return new TrueAnomaly(orbit.is_clockwise() ? -angle : angle) */
 	}
 
 	/**
@@ -379,13 +412,23 @@ class MeanAnomaly {
 	}
 
 	/**
-	 * Gets a **DVec2** point from a given _[mean anomaly](https://en.wikipedia.org/wiki/Mean_anomaly)_ of the orbit.
+	 * Gets a **DVec2** point from a given _[mean anomaly](https://en.wikipedia.org/wiki/Mean_anomaly)_ of the orbit in mathematical space.
 	 *
 	 * @param {KeplerianOrbit} orbit The orbit in question.
 	 * @returns {object} The **point** object.
 	 */
 	point(orbit) {
 		return this.eccentric_anomaly(orbit).point(orbit)
+	}
+
+	/**
+	 * Gets a **DVec2** point from a given _[mean anomaly](https://en.wikipedia.org/wiki/Mean_anomaly)_ of the orbit in local space.
+	 *
+	 * @param {KeplerianOrbit} orbit The orbit in question.
+	 * @returns {object} The **point** object.
+	 */
+	point2d(orbit) {
+		return this.eccentric_anomaly(orbit).point2d(orbit)
 	}
 
 	/**

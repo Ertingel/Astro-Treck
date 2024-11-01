@@ -93,7 +93,7 @@ function apoapsis_periapsis_conversion() {
 		const orbit = new KeplerianOrbit(1.0, eccentricity)
 
 		const periapsis_result = orbit.periapsis()
-		var { x, y } = new TrueAnomaly(0.0).point(orbit)
+		var { x, y } = new TrueAnomaly(0.0).point2d(orbit)
 		const periapsis_expected = Math.sqrt(x * x + y * y)
 
 		test(
@@ -104,7 +104,7 @@ function apoapsis_periapsis_conversion() {
 		)
 
 		const apoapsis_result = orbit.apoapsis()
-		var { x, y } = new TrueAnomaly(Math.PI).point(orbit)
+		var { x, y } = new TrueAnomaly(Math.PI).point2d(orbit)
 		const apoapsis_expected = Math.sqrt(x * x + y * y)
 
 		test(
@@ -173,7 +173,7 @@ function point_from_anomaly() {
 
 	const test2 = (orbit, input, x, y) => {
 		// Test that the eccentric anomaly matches.
-		const result1 = new EccentricAnomaly().set_degrees(input).point(orbit)
+		const result1 = new EccentricAnomaly().set_degrees(input).point2d(orbit)
 		test(
 			`'point_from_eccentric_anomaly' did not convert correctly! \nInput:	${input} \nExpected: ${x}, ${y} \nGot:	  ${result1.x}, ${result1.y} \nTarget:   ${target_precision}`,
 			result1,
@@ -185,7 +185,7 @@ function point_from_anomaly() {
 		const result2 = new EccentricAnomaly()
 			.set_degrees(input)
 			.true_anomaly(orbit)
-			.point(orbit)
+			.point2d(orbit)
 		test(
 			`'point_from_true_anomaly' did not convert correctly! \nInput:	${input} \nExpected: ${x},${y} \nGot:	  ${result2.x},${result2.y} \nTarget:   ${target_precision}`,
 			result2,

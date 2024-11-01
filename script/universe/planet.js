@@ -36,7 +36,7 @@ class Orbit extends Object {
 		const { x, y } = new MeanAnomaly(
 			canvas.time /
 				(this.orbit.semimajor_axis * this.orbit.semimajor_axis)
-		).point(this.orbit)
+		).point2d(this.orbit)
 		this.x = x
 		this.y = y
 	}
@@ -74,7 +74,7 @@ class Orbit extends Object {
 				(canvas.time * 3) /
 					(this.orbit.semimajor_axis * this.orbit.semimajor_axis) +
 					(i / count) * Math.PI * 2
-			).point(this.orbit)
+			).point2d(this.orbit)
 
 			canvas.context.beginPath()
 			canvas.context.arc(x, y, width, 0, Math.PI * 2)
@@ -134,19 +134,16 @@ class Orbit extends Object {
 		canvas.context.setTransform(this.parent.transform)
 		canvas.context.rotate(-this.orbit.argument_of_periapsis)
 
-		const time_shift =
+		let time_shift =
 			(canvas.time * 3) /
 			(this.orbit.semimajor_axis * this.orbit.semimajor_axis)
+		if (this.orbit.is_clockwise()) time_shift = -time_shift
 
 		const start_angle = new MeanAnomaly(time_shift).true_anomaly(
 			this.orbit
 		).angle
 
-		const gradient = canvas.context.createConicGradient(
-			start_angle + this.orbit.argument_of_periapsis,
-			0,
-			0
-		)
+		const gradient = canvas.context.createConicGradient(start_angle, 0, 0)
 
 		if (this.orbit.is_clockwise()) {
 			gradient.addColorStop(0, color1)
