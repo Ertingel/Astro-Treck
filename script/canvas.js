@@ -20,8 +20,7 @@ class Canvas {
 		}
 	) {
 		// Set element.
-		if (typeof element == "string")
-			this.element = document.getElementById(element)
+		if (typeof element == "string") this.element = document.getElementById(element)
 		else this.element = element
 
 		// Set context.
@@ -106,8 +105,7 @@ class Canvas {
 	update() {
 		const recursive = entity => {
 			if (entity.update) entity.update(this)
-			if (entity.children)
-				entity.children.forEach(child => recursive(child))
+			if (entity.children) entity.children.forEach(child => recursive(child))
 		}
 		this.children.forEach(entity => recursive(entity))
 	}
@@ -125,8 +123,7 @@ class Canvas {
 			entity.transform = this.context.getTransform()
 
 			if (entity.draw) entity.draw(this)
-			if (entity.children)
-				entity.children.forEach(child => recursive(child))
+			if (entity.children) entity.children.forEach(child => recursive(child))
 
 			this.context.restore()
 		}
@@ -144,10 +141,7 @@ class Canvas {
 		this.context.fillRect(0, 0, this.element.width, this.element.height)
 
 		// Make it so that the canvas 0,0 is at the center.
-		this.context.translate(
-			this.element.width / 2.0,
-			this.element.height / 2.0
-		)
+		this.context.translate(this.element.width / 2.0, this.element.height / 2.0)
 
 		// Calculate and set the zoom level that can fit the camera width and height.
 		const zoom = Math.min(

@@ -28,9 +28,8 @@ function test(error_message, value, expected, tolerance = null) {
 
 			return assert(
 				value.every((_, i) =>
-					Math.abs(
-						value[i] - expected_is_array ? expected[i] : expected
-					) <= tolerance_is_array
+					Math.abs(value[i] - expected_is_array ? expected[i] : expected) <=
+					tolerance_is_array
 						? tolerance[i]
 						: tolerance
 				),
@@ -38,9 +37,7 @@ function test(error_message, value, expected, tolerance = null) {
 			)
 		} else {
 			return assert(
-				value.every((_, i) =>
-					value[i] == expected_is_array ? expected[i] : expected
-				),
+				value.every((_, i) => (value[i] == expected_is_array ? expected[i] : expected)),
 				error_message
 			)
 		}
@@ -58,11 +55,8 @@ function test(error_message, value, expected, tolerance = null) {
 
 			return assert(
 				keys.every(key =>
-					Math.abs(
-						value[key] - expected_is_object
-							? expected[key]
-							: expected
-					) <= tolerance_is_object
+					Math.abs(value[key] - expected_is_object ? expected[key] : expected) <=
+					tolerance_is_object
 						? tolerance[key]
 						: tolerance
 				),
@@ -70,22 +64,51 @@ function test(error_message, value, expected, tolerance = null) {
 			)
 		} else {
 			return assert(
-				keys.every(key =>
-					value[key] == expected_is_object ? expected[key] : expected
-				),
+				keys.every(key => (value[key] == expected_is_object ? expected[key] : expected)),
 				error_message
 			)
 		}
 	}
 
 	//For number
-	if (tolerance)
-		return assert(Math.abs(value - expected) <= tolerance, error_message)
+	if (tolerance) return assert(Math.abs(value - expected) <= tolerance, error_message)
 	else return assert(value == expected, error_message)
 }
 
-apoapsis_periapsis_conversion()
-function apoapsis_periapsis_conversion() {
+escape_velocity_test()
+function escape_velocity_test() {
+	const earth = new CelestialObject(5.972e24)
+	const earth_calculated = earth.get_escape_velocity(6.383e6)
+	const earth_expected = 11175.37444
+	test(
+		`The 'get_escape_velocity' of earth does not match expected value! ${earth_calculated} != ${earth_expected}`,
+		earth_calculated,
+		earth_expected,
+		1.0
+	)
+
+	const earth2_calculated = earth.get_escape_velocity(6.383e6 * 2.0)
+	const earth2_expected = 7902.183049
+	test(
+		`The 'get_escape_velocity' of earth2 does not match expected value! ${earth2_calculated} != ${earth2_expected}`,
+		earth2_calculated,
+		earth2_expected,
+		1.0
+	)
+
+	const sun = new CelestialObject(1.98847e30)
+	const sun_calculated = sun.get_escape_velocity(6.957e8)
+	const sun_expected = 617679.4121
+	test(
+		`The 'get_escape_velocity' of sun does not match expected value! ${sun_calculated} != ${sun_expected}`,
+		sun_calculated,
+		sun_expected,
+		1.0
+	)
+}
+
+apoapsis_periapsis_conversion_test()
+function apoapsis_periapsis_conversion_test() {
 	const target_precision = 0.000001
 
 	for (let e = 0; e < 20; e++) {
@@ -121,8 +144,8 @@ function apoapsis_periapsis_conversion() {
 	}
 }
 
-true_and_eccentric_anomaly_conversion()
-function true_and_eccentric_anomaly_conversion() {
+true_and_eccentric_anomaly_conversion_test()
+function true_and_eccentric_anomaly_conversion_test() {
 	const target_precision = 0.000001
 
 	for (let e = 0; e < 20; e++) {
@@ -144,8 +167,8 @@ function true_and_eccentric_anomaly_conversion() {
 	}
 }
 
-eccentric_and_mean_anomaly_conversion()
-function eccentric_and_mean_anomaly_conversion() {
+eccentric_and_mean_anomaly_conversion_test()
+function eccentric_and_mean_anomaly_conversion_test() {
 	const target_precision = 0.0000001
 
 	for (let e = 0; e < 20; e++) {
@@ -167,8 +190,8 @@ function eccentric_and_mean_anomaly_conversion() {
 	}
 }
 
-point_from_anomaly()
-function point_from_anomaly() {
+point_from_anomaly_test()
+function point_from_anomaly_test() {
 	const target_precision = 0.0000001
 
 	const test2 = (orbit, input, x, y) => {
@@ -182,10 +205,7 @@ function point_from_anomaly() {
 		)
 
 		// Test that the true anomaly matches.
-		const result2 = new EccentricAnomaly()
-			.set_degrees(input)
-			.true_anomaly(orbit)
-			.point2d(orbit)
+		const result2 = new EccentricAnomaly().set_degrees(input).true_anomaly(orbit).point2d(orbit)
 		test(
 			`'point_from_true_anomaly' did not convert correctly! \nInput:	${input} \nExpected: ${x},${y} \nGot:	  ${result2.x},${result2.y} \nTarget:   ${target_precision}`,
 			result2,

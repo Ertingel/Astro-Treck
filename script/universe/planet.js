@@ -16,13 +16,7 @@ class Star extends Object {
 }
 
 class Orbit extends Object {
-	constructor({
-		parent,
-		semimajor_axis,
-		eccentricity,
-		argument_of_periapsis,
-		clockwise,
-	}) {
+	constructor({ parent, semimajor_axis, eccentricity, argument_of_periapsis, clockwise }) {
 		super({ parent })
 		this.orbit = new KeplerianOrbit(
 			semimajor_axis,
@@ -34,8 +28,7 @@ class Orbit extends Object {
 
 	update(canvas) {
 		const { x, y } = new MeanAnomaly(
-			canvas.time /
-				(this.orbit.semimajor_axis * this.orbit.semimajor_axis)
+			canvas.time / (this.orbit.semimajor_axis * this.orbit.semimajor_axis)
 		).point2d(this.orbit)
 		this.x = x
 		this.y = y
@@ -71,8 +64,7 @@ class Orbit extends Object {
 
 		for (let i = 0; i < count; i++) {
 			const { x, y } = new MeanAnomaly(
-				(canvas.time * 3) /
-					(this.orbit.semimajor_axis * this.orbit.semimajor_axis) +
+				(canvas.time * 3) / (this.orbit.semimajor_axis * this.orbit.semimajor_axis) +
 					(i / count) * Math.PI * 2
 			).point2d(this.orbit)
 
@@ -92,9 +84,7 @@ class Orbit extends Object {
 		canvas.context.strokeStyle = color
 		canvas.context.lineWidth = width
 
-		let time_shift =
-			(canvas.time * 3) /
-			(this.orbit.semimajor_axis * this.orbit.semimajor_axis)
+		let time_shift = (canvas.time * 3) / (this.orbit.semimajor_axis * this.orbit.semimajor_axis)
 		if (this.orbit.is_clockwise()) time_shift = -time_shift
 
 		for (let i = 0; i < count; i++) {
@@ -102,9 +92,9 @@ class Orbit extends Object {
 				time_shift + (i / count - 0.5 / count) * Math.PI * 2
 			).eccentric_anomaly(this.orbit)
 
-			const a2 = new MeanAnomaly(
-				time_shift + (i / count) * Math.PI * 2
-			).eccentric_anomaly(this.orbit)
+			const a2 = new MeanAnomaly(time_shift + (i / count) * Math.PI * 2).eccentric_anomaly(
+				this.orbit
+			)
 
 			canvas.context.beginPath()
 			canvas.context.ellipse(
@@ -134,14 +124,10 @@ class Orbit extends Object {
 		canvas.context.setTransform(this.parent.transform)
 		canvas.context.rotate(-this.orbit.argument_of_periapsis)
 
-		let time_shift =
-			(canvas.time * 3) /
-			(this.orbit.semimajor_axis * this.orbit.semimajor_axis)
+		let time_shift = (canvas.time * 3) / (this.orbit.semimajor_axis * this.orbit.semimajor_axis)
 		if (this.orbit.is_clockwise()) time_shift = -time_shift
 
-		const start_angle = new MeanAnomaly(time_shift).true_anomaly(
-			this.orbit
-		).angle
+		const start_angle = new MeanAnomaly(time_shift).true_anomaly(this.orbit).angle
 
 		const gradient = canvas.context.createConicGradient(start_angle, 0, 0)
 
@@ -153,15 +139,9 @@ class Orbit extends Object {
 			gradient.addColorStop(0, color2)
 		}
 
-		for (
-			let i = (Math.PI * 2) / count;
-			i < Math.PI * 2;
-			i += (Math.PI * 2) / count
-		) {
+		for (let i = (Math.PI * 2) / count; i < Math.PI * 2; i += (Math.PI * 2) / count) {
 			const angle =
-				(new MeanAnomaly(time_shift + i).true_anomaly(this.orbit)
-					.angle -
-					start_angle) /
+				(new MeanAnomaly(time_shift + i).true_anomaly(this.orbit).angle - start_angle) /
 					(2 * Math.PI) +
 				1.0
 
