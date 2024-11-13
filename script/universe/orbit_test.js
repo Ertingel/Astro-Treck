@@ -75,16 +75,40 @@ function test(error_message, value, expected, tolerance = null) {
 	else return assert(value == expected, error_message)
 }
 
+delta_velocity_test()
+function delta_velocity_test() {
+	const earth = new CelestialObject(5.972e24)
+
+	const earth_calculated = earth.get_altidude_delta_velocity(6.383e6, 7.383e6)
+	const earth_expected = 4112.876314
+	test(
+		`The 'get_altidude_delta_velocity' of earth does not match expected value! ${earth_calculated} != ${earth_expected}`,
+		earth_calculated,
+		earth_expected,
+		0.0001
+	)
+
+	const earth2_calculated = earth.get_altidude_delta_velocity(6.383e6 + 0.5e6, 7.383e6)
+	const earth2_expected = 2800.620019
+	test(
+		`The 'get_altidude_delta_velocity' of earth2 does not match expected value! ${earth2_calculated} != ${earth2_expected}`,
+		earth2_calculated,
+		earth2_expected,
+		0.0001
+	)
+}
+
 escape_velocity_test()
 function escape_velocity_test() {
 	const earth = new CelestialObject(5.972e24)
+
 	const earth_calculated = earth.get_escape_velocity(6.383e6)
 	const earth_expected = 11175.37444
 	test(
 		`The 'get_escape_velocity' of earth does not match expected value! ${earth_calculated} != ${earth_expected}`,
 		earth_calculated,
 		earth_expected,
-		1.0
+		0.0001
 	)
 
 	const earth2_calculated = earth.get_escape_velocity(6.383e6 * 2.0)
@@ -93,7 +117,7 @@ function escape_velocity_test() {
 		`The 'get_escape_velocity' of earth2 does not match expected value! ${earth2_calculated} != ${earth2_expected}`,
 		earth2_calculated,
 		earth2_expected,
-		1.0
+		0.0001
 	)
 
 	const sun = new CelestialObject(1.98847e30)
@@ -103,7 +127,7 @@ function escape_velocity_test() {
 		`The 'get_escape_velocity' of sun does not match expected value! ${sun_calculated} != ${sun_expected}`,
 		sun_calculated,
 		sun_expected,
-		1.0
+		0.0001
 	)
 }
 

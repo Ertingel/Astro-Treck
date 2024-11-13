@@ -61,7 +61,7 @@ class CelestialObject {
 	 * ```
 	 * v = ±sqrt(2 * G * m * (1 / r1 - 1 / r2)) = ±sqrt(2 * μ * (1 / r1 - 1 / r2))
 	 *
-	 * if r1 <= r2: v = sqrt(2 * μ * (1 / r1 - 1 / r2))
+	 * if r1 <= r2: v =  sqrt(2 * μ * (1 / r1 - 1 / r2))
 	 * else:        v = -sqrt(2 * μ * (1 / r2 - 1 / r1))
 	 * ```
 	 *
@@ -70,29 +70,32 @@ class CelestialObject {
 	 * @returns {number} The minimum velocity requiered to achieve desiered transition.
 	 */
 	get_altidude_delta_velocity(from, to) {
-		if (from <= to) return sqrt(2.0 * this.gravitational_parameter * (1.0 / from - 1.0 / to))
-		else return -sqrt(2.0 * this.gravitational_parameter * (1.0 / to - 1.0 / from))
+		if (from <= to)
+			return Math.sqrt(2.0 * this.gravitational_parameter * (1.0 / from - 1.0 / to))
+		else return -Math.sqrt(2.0 * this.gravitational_parameter * (1.0 / to - 1.0 / from))
 	}
 }
 
 /**
  * The `KeplerianOrbit` class encapsulate the data of a _[Keplerian orbit](https://en.wikipedia.org/wiki/Kepler_orbit)_.
  *
- * | Name                                                                                             | Notation  | Description                                                                                              |
- * |-------------------------------------------------------------------------------------------------:|:---------:|:---------------------------------------------------------------------------------------------------------|
- * | [Semimajor axis](https://en.wikipedia.org/wiki/Semi-major_and_semi-minor_axes)                   | _a_       | The half distance between the apoapsis and periapsis.                                                    |
- * | [Semiminor axis](https://en.wikipedia.org/wiki/Semi-major_and_semi-minor_axes)                   | _b_       | The line segment that is at right angles with the semi-major axis.                                       |
- * | [Focal point](https://en.wikipedia.org/wiki/Ellipse#Definition_as_locus_of_points)               | _c_       | The distance between the elipse center and its focal point.                                              |
- * | [directrix](https://en.wikipedia.org/wiki/Conic_section#Eccentricity,_focus_and_directrix)       | _d_       | The directrix of the parabola helps in defining the parabola.                                            |
- * | [semi-latus rectum](https://en.wikipedia.org/wiki/Ellipse#Semi-latus_rectum)                     | _ℓ_       | The length of the chord through one focus, perpendicular to the major axis.                              |
- * | [Eccentricity](https://en.wikipedia.org/wiki/Orbital_eccentricity)                               | _e_       | The shape of the ellipse.                                                                                |
- * | [Argument of periapsis](https://en.wikipedia.org/wiki/Argument_of_periapsis)                     | _ω_       | The orientation of the ellipse in the orbital plane.                                                     |
- * | [Inclination](https://en.wikipedia.org/wiki/Orbital_inclination)                                 | _i_       | The vertical tilt of the ellipse with respect to the reference plane.                                    |
- * | [Longitude of the ascending node](https://en.wikipedia.org/wiki/Longitude_of_the_ascending_node) | _Ω_       | The Horizontall orientation the ascending node of the ellipse.                                           |
- * | [True anomaly](https://en.wikipedia.org/wiki/True_anomaly)                                       | _ν θ f_   | The position of the orbiting body along the ellipse at a specific time.                                  |
- * | [Eccentric anomaly](https://en.wikipedia.org/wiki/Eccentric_anomaly)                             | _E_       | The angular parameter that defines the position of a body that is moving along an elliptic Kepler orbit. |
- * | [Mean anomaly](https://en.wikipedia.org/wiki/Mean_anomaly)                                       | _M_       | The mathematically convenient fictitious "angle" which varies linearly with time.                        |
- * | Radius                                                                                           | _r_       | The radius form focal center to orbiting object.                                                         |
+ * | Name                                                                                             | Notation | Description                                                                                              |
+ * |-------------------------------------------------------------------------------------------------:|:--------:|:---------------------------------------------------------------------------------------------------------|
+ * | [Semimajor axis](https://en.wikipedia.org/wiki/Semi-major_and_semi-minor_axes)                   | _a_      | The half distance between the apoapsis and periapsis.                                                    |
+ * | [Semiminor axis](https://en.wikipedia.org/wiki/Semi-major_and_semi-minor_axes)                   | _b_      | The line segment that is at right angles with the semi-major axis.                                       |
+ * | [Focal point](https://en.wikipedia.org/wiki/Ellipse#Definition_as_locus_of_points)               | _c_      | The distance between the elipse center and its focal point.                                              |
+ * | [directrix](https://en.wikipedia.org/wiki/Conic_section#Eccentricity,_focus_and_directrix)       | _d_      | The directrix of the parabola helps in defining the parabola.                                            |
+ * | [semi-latus rectum](https://en.wikipedia.org/wiki/Ellipse#Semi-latus_rectum)                     | _ℓ_      | The length of the chord through one focus, perpendicular to the major axis.                              |
+ * | [Eccentricity](https://en.wikipedia.org/wiki/Orbital_eccentricity)                               | _e_      | The shape of the ellipse.                                                                                |
+ * | [Energy](https://en.wikipedia.org/wiki/Energy)                                                   | _E_      | The energy of the object.                                                                                |
+ * | [Gravitational parameter](https://en.wikipedia.org/wiki/Standard_gravitational_parameter)        | _μ_      | The product of the gravitational constant G and the mass M of that body.                                 |
+ * | [Argument of periapsis](https://en.wikipedia.org/wiki/Argument_of_periapsis)                     | _ω_      | The orientation of the ellipse in the orbital plane.                                                     |
+ * | [Inclination](https://en.wikipedia.org/wiki/Orbital_inclination)                                 | _i_      | The vertical tilt of the ellipse with respect to the reference plane.                                    |
+ * | [Longitude of the ascending node](https://en.wikipedia.org/wiki/Longitude_of_the_ascending_node) | _Ω_      | The Horizontall orientation the ascending node of the ellipse.                                           |
+ * | [True anomaly](https://en.wikipedia.org/wiki/True_anomaly)                                       | _ν θ f_  | The position of the orbiting body along the ellipse at a specific time.                                  |
+ * | [Eccentric anomaly](https://en.wikipedia.org/wiki/Eccentric_anomaly)                             | _E_      | The angular parameter that defines the position of a body that is moving along an elliptic Kepler orbit. |
+ * | [Mean anomaly](https://en.wikipedia.org/wiki/Mean_anomaly)                                       | _M_      | The mathematically convenient fictitious "angle" which varies linearly with time.                        |
+ * | Radius                                                                                           | _r_      | The radius form focal center to orbiting object.                                                         |
  */
 class KeplerianOrbit {
 	/**Creates `KeplerianOrbit` class that encapsulate the data of a _[Keplerian orbit](https://en.wikipedia.org/wiki/Kepler_orbit)_.
@@ -179,6 +182,47 @@ class KeplerianOrbit {
 		return (1.0 + this.eccentricity) * this.semimajor_axis
 	}
 
+	/**Gets the _[specific orbital energy](https://en.wikipedia.org/wiki/Specific_orbital_energy)_ of the orbit.
+	 * The _[specific orbital energy](https://en.wikipedia.org/wiki/Specific_orbital_energy)_ is notated with the _ε_ symbol.
+	 * ```
+	 * ε = εk + εp = V² / 2 - μ / r = -1/2 * μ^2 / h^2 * (1 - e^2) = -μ / (2 * a)
+	 *
+	 * if e = 0: ε = 0
+	 * else:     ε = -μ / (2 * a)
+	 * ```
+	 *
+	 * @param {CelestialObject} parent_boddy The parameters of the parent object.
+	 * @param {number} gravitational_parameter The gravitational parameter of the orbiting object.
+	 * @returns {number} The energy of the orbit.
+	 */
+	energy(parent_boddy, gravitational_parameter) {
+		if (this.eccentricity == 1.0) return 0.0
+
+		return (
+			-(parent_boddy.gravitational_parameter * gravitational_parameter) /
+			(2.0 * this.semimajor_axis)
+		)
+	}
+
+	/**Gets the _[orbital period](https://en.wikipedia.org/wiki/Orbital_period)_ of the orbit when orbiting a given parent boddy.
+	 * ```
+	 * T = 2π * sqrt(a^3 / (G * M)) = 2π * sqrt(a^3 / μ)
+	 * ```
+	 *
+	 * @param {CelestialObject} parent_boddy The parameters of the parent object.
+	 * @returns The time in seconds.
+	 */
+	orbital_period(parent_boddy) {
+		return (
+			2.0 *
+			Math.PI *
+			Math.sqrt(
+				(this.semimajor_axis * this.semimajor_axis * this.semimajor_axis) /
+					parent_boddy.gravitational_parameter
+			)
+		)
+	}
+
 	/**Rotates a point from mathematical coordinates into local coordinates.
 	 *
 	 * @param {*} point
@@ -208,15 +252,16 @@ class KeplerianOrbit {
 /**
  * The `TrueAnomaly` class encapsulate the data of a _[True anomaly](https://en.wikipedia.org/wiki/True_anomaly)_.
  *
- * | Name                                                                                       | Notation  | Description                                                                                              |
- * |-------------------------------------------------------------------------------------------:|:---------:|:---------------------------------------------------------------------------------------------------------|
- * | [Semimajor axis](https://en.wikipedia.org/wiki/Semi-major_and_semi-minor_axes)             | _a_       | The half distance between the apoapsis and periapsis.                                                    |
- * | [Focal point](https://en.wikipedia.org/wiki/Ellipse#Definition_as_locus_of_points)         | _c_       | The distance between the elipse center and its focal point.                                              |
- * | [Eccentricity](https://en.wikipedia.org/wiki/Orbital_eccentricity)                         | _e_       | The shape of the ellipse.                                                                                |
- * | [True anomaly](https://en.wikipedia.org/wiki/True_anomaly)                                 | _ν θ f_   | The position of the orbiting body along the ellipse at a specific time.                                  |
- * | [Eccentric anomaly](https://en.wikipedia.org/wiki/Eccentric_anomaly)                       | _E_       | The angular parameter that defines the position of a body that is moving along an elliptic Kepler orbit. |
- * | [Mean anomaly](https://en.wikipedia.org/wiki/Mean_anomaly)                                 | _M_       | The mathematically convenient fictitious "angle" which varies linearly with time.                        |
- * | Radius                                                                                     | _r_       | The radius form focal center to orbiting object.                                                         |
+ * | Name                                                                                       | Notation | Description                                                                                              |
+ * |-------------------------------------------------------------------------------------------:|:--------:|:---------------------------------------------------------------------------------------------------------|
+ * | [Semimajor axis](https://en.wikipedia.org/wiki/Semi-major_and_semi-minor_axes)             | _a_      | The half distance between the apoapsis and periapsis.                                                    |
+ * | [Focal point](https://en.wikipedia.org/wiki/Ellipse#Definition_as_locus_of_points)         | _c_      | The distance between the elipse center and its focal point.                                              |
+ * | [Eccentricity](https://en.wikipedia.org/wiki/Orbital_eccentricity)                         | _e_      | The shape of the ellipse.                                                                                |
+ * | [semi-latus rectum](https://en.wikipedia.org/wiki/Ellipse#Semi-latus_rectum)               | _ℓ_      | The length of the chord through one focus, perpendicular to the major axis.                              |
+ * | [True anomaly](https://en.wikipedia.org/wiki/True_anomaly)                                 | _ν θ f_  | The position of the orbiting body along the ellipse at a specific time.                                  |
+ * | [Eccentric anomaly](https://en.wikipedia.org/wiki/Eccentric_anomaly)                       | _E_      | The angular parameter that defines the position of a body that is moving along an elliptic Kepler orbit. |
+ * | [Mean anomaly](https://en.wikipedia.org/wiki/Mean_anomaly)                                 | _M_      | The mathematically convenient fictitious "angle" which varies linearly with time.                        |
+ * | Radius                                                                                     | _r_      | The radius form focal center to orbiting object.                                                         |
  */
 class TrueAnomaly {
 	/**Creates `TrueAnomaly` class that encapsulate the data of a _[True anomaly](https://en.wikipedia.org/wiki/True_anomaly)_.
@@ -247,17 +292,19 @@ class TrueAnomaly {
 
 	/**Gets the radius form _focal center_ to _orbiting object_ given a _[true anomaly](https://en.wikipedia.org/wiki/True_anomaly)_.
 	 * ```
-	 * r = a * (1 - e^2) / (1 + e * cos(θ))
+	 * r = a * (1 - e^2) / (1 + e * cos(θ)) ) = ℓ / (1 + e * cos(θ))
+	 *
+	 * if e > 1: r = -ℓ / (1 + e * cos(θ))
+	 * else:     r =  ℓ / (1 + e * cos(θ))
 	 * ```
 	 *
 	 * @param {KeplerianOrbit} orbit The orbit in question.
 	 * @returns {number} The radius form _focal center_ to orbiting object.
 	 */
 	radius(orbit) {
-		return (
-			(orbit.semimajor_axis * (1.0 - orbit.eccentricity * orbit.eccentricity)) /
-			(1.0 + orbit.eccentricity * Math.cos(this.angle))
-		)
+		const radius = orbit.Semilatus_rectum() / (1.0 + orbit.eccentricity * Math.cos(this.angle))
+
+		return this.eccentricity > 1.0 ? -radius : radius
 	}
 
 	/**Gets a **point** object from a given _[true anomaly](https://en.wikipedia.org/wiki/True_anomaly)_ of the orbit in mathematical space.
@@ -270,7 +317,7 @@ class TrueAnomaly {
 	 */
 	point(orbit) {
 		const radius = this.radius(orbit)
-		let angle = this.angle + orbit.argument_of_periapsis
+		const angle = this.angle + orbit.argument_of_periapsis
 
 		return {
 			x: Math.cos(angle) * radius,
@@ -322,16 +369,16 @@ class TrueAnomaly {
 /**
  * The `EccentricAnomaly` class encapsulate the data of a _[Eccentric anomaly](https://en.wikipedia.org/wiki/Eccentric_anomaly)_.
  *
- * | Name                                                                                       | Notation  | Description                                                                                              |
- * |-------------------------------------------------------------------------------------------:|:---------:|:---------------------------------------------------------------------------------------------------------|
- * | [Semimajor axis](https://en.wikipedia.org/wiki/Semi-major_and_semi-minor_axes)             | _a_       | The half distance between the apoapsis and periapsis.                                                    |
- * | [Semiminor axis](https://en.wikipedia.org/wiki/Semi-major_and_semi-minor_axes)             | _b_       | The line segment that is at right angles with the semi-major axis.                                       |
- * | [Focal point](https://en.wikipedia.org/wiki/Ellipse#Definition_as_locus_of_points)         | _c_       | The distance between the elipse center and its focal point.                                              |
- * | [Eccentricity](https://en.wikipedia.org/wiki/Orbital_eccentricity)                         | _e_       | The shape of the ellipse.                                                                                |
- * | [True anomaly](https://en.wikipedia.org/wiki/True_anomaly)                                 | _ν θ f_   | The position of the orbiting body along the ellipse at a specific time.                                  |
- * | [Eccentric anomaly](https://en.wikipedia.org/wiki/Eccentric_anomaly)                       | _E_       | The angular parameter that defines the position of a body that is moving along an elliptic Kepler orbit. |
- * | [Mean anomaly](https://en.wikipedia.org/wiki/Mean_anomaly)                                 | _M_       | The mathematically convenient fictitious "angle" which varies linearly with time.                        |
- * | Radius                                                                                     | _r_       | The radius form focal center to orbiting object.                                                         |
+ * | Name                                                                                       | Notation | Description                                                                                              |
+ * |-------------------------------------------------------------------------------------------:|:--------:|:---------------------------------------------------------------------------------------------------------|
+ * | [Semimajor axis](https://en.wikipedia.org/wiki/Semi-major_and_semi-minor_axes)             | _a_      | The half distance between the apoapsis and periapsis.                                                    |
+ * | [Semiminor axis](https://en.wikipedia.org/wiki/Semi-major_and_semi-minor_axes)             | _b_      | The line segment that is at right angles with the semi-major axis.                                       |
+ * | [Focal point](https://en.wikipedia.org/wiki/Ellipse#Definition_as_locus_of_points)         | _c_      | The distance between the elipse center and its focal point.                                              |
+ * | [Eccentricity](https://en.wikipedia.org/wiki/Orbital_eccentricity)                         | _e_      | The shape of the ellipse.                                                                                |
+ * | [True anomaly](https://en.wikipedia.org/wiki/True_anomaly)                                 | _ν θ f_  | The position of the orbiting body along the ellipse at a specific time.                                  |
+ * | [Eccentric anomaly](https://en.wikipedia.org/wiki/Eccentric_anomaly)                       | _E_      | The angular parameter that defines the position of a body that is moving along an elliptic Kepler orbit. |
+ * | [Mean anomaly](https://en.wikipedia.org/wiki/Mean_anomaly)                                 | _M_      | The mathematically convenient fictitious "angle" which varies linearly with time.                        |
+ * | Radius                                                                                     | _r_      | The radius form focal center to orbiting object.                                                         |
  */
 class EccentricAnomaly {
 	/**Creates `EccentricAnomaly` class that encapsulate the data of a _[Eccentric anomaly](https://en.wikipedia.org/wiki/Eccentric_anomaly)_.
@@ -428,16 +475,16 @@ class EccentricAnomaly {
 /**
  * The `MeanAnomaly` class encapsulate the data of a _[Mean anomaly](https://en.wikipedia.org/wiki/Mean_anomaly)_.
  *
- * | Name                                                                                       | Notation  | Description                                                                                              |
- * |-------------------------------------------------------------------------------------------:|:---------:|:---------------------------------------------------------------------------------------------------------|
- * | [Semimajor axis](https://en.wikipedia.org/wiki/Semi-major_and_semi-minor_axes)             | _a_       | The half distance between the apoapsis and periapsis.                                                    |
- * | [Semiminor axis](https://en.wikipedia.org/wiki/Semi-major_and_semi-minor_axes)             | _b_       | The line segment that is at right angles with the semi-major axis.                                       |
- * | [directrix](https://en.wikipedia.org/wiki/Conic_section#Eccentricity,_focus_and_directrix) | _d_       | The directrix of the parabola helps in defining the parabola.                                            |
- * | [Eccentricity](https://en.wikipedia.org/wiki/Orbital_eccentricity)                         | _e_       | The shape of the ellipse.                                                                                |
- * | [True anomaly](https://en.wikipedia.org/wiki/True_anomaly)                                 | _ν θ f_   | The position of the orbiting body along the ellipse at a specific time.                                  |
- * | [Eccentric anomaly](https://en.wikipedia.org/wiki/Eccentric_anomaly)                       | _E_       | The angular parameter that defines the position of a body that is moving along an elliptic Kepler orbit. |
- * | [Mean anomaly](https://en.wikipedia.org/wiki/Mean_anomaly)                                 | _M_       | The mathematically convenient fictitious "angle" which varies linearly with time.                        |
- * | Radius                                                                                     | _r_       | The radius form focal center to orbiting object.                                                         |
+ * | Name                                                                                       | Notation | Description                                                                                              |
+ * |-------------------------------------------------------------------------------------------:|:--------:|:---------------------------------------------------------------------------------------------------------|
+ * | [Semimajor axis](https://en.wikipedia.org/wiki/Semi-major_and_semi-minor_axes)             | _a_      | The half distance between the apoapsis and periapsis.                                                    |
+ * | [Semiminor axis](https://en.wikipedia.org/wiki/Semi-major_and_semi-minor_axes)             | _b_      | The line segment that is at right angles with the semi-major axis.                                       |
+ * | [directrix](https://en.wikipedia.org/wiki/Conic_section#Eccentricity,_focus_and_directrix) | _d_      | The directrix of the parabola helps in defining the parabola.                                            |
+ * | [Eccentricity](https://en.wikipedia.org/wiki/Orbital_eccentricity)                         | _e_      | The shape of the ellipse.                                                                                |
+ * | [True anomaly](https://en.wikipedia.org/wiki/True_anomaly)                                 | _ν θ f_  | The position of the orbiting body along the ellipse at a specific time.                                  |
+ * | [Eccentric anomaly](https://en.wikipedia.org/wiki/Eccentric_anomaly)                       | _E_      | The angular parameter that defines the position of a body that is moving along an elliptic Kepler orbit. |
+ * | [Mean anomaly](https://en.wikipedia.org/wiki/Mean_anomaly)                                 | _M_      | The mathematically convenient fictitious "angle" which varies linearly with time.                        |
+ * | Radius                                                                                     | _r_      | The radius form focal center to orbiting object.                                                         |
  */
 class MeanAnomaly {
 	/**Creates `MeanAnomaly` class that encapsulate the data of a _[Mean anomaly](https://en.wikipedia.org/wiki/Mean_anomaly)_.
